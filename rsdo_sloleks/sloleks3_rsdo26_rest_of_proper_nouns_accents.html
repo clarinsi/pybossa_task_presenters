@@ -1,0 +1,335 @@
+<!-- NOTIFICATIONS -->
+
+<div class="row">
+  <div class="col" style="background-color:#DADADA">
+    </div>
+</div>
+<div class="row">
+    <div class="span12">
+        <div id="success" class="alert alert-success" style="display:none;">
+            <a class="close">×</a>
+            <strong>Odlično!</strong> Odgovor je bil shranjen.
+        </div>
+        <div id="loading" class="alert alert-info" style="display:none;">
+            <a class="close">×</a>
+            Nalagam naslednjo nalogo ...
+        </div>
+        <div id="taskcompleted" class="alert alert-info" style="display:none;">
+            <strong>Naloga je končana!</strong> Najlepša hvala!
+        </div>
+        <div id="finish" class="alert alert-success" style="display:none;">
+            <strong>Čestitke!</strong> Sodelovali ste pri vseh razpoložljivih nalogah!
+            <br />
+            <div class="alert-actions">
+                <a class="btn small" href="/">Nazaj</a>
+                <a class="btn small" href="/app">ali preveri druge projekte</a>
+            </div>
+        </div>
+        <div id="error" class="alert alert-error" style="display:none;">
+            <a class="close">×</a>
+            <strong>Napaka!</strong> Nekaj se je izjalovilo. Prosimo, da o tem obvestite administratorje.
+        </div>
+    </div>
+</div>
+
+<!-- HTML SKELETON FOR TASKS -->
+<div class="row skeleton">
+
+    <!-- TASK HTML SKELETON -->
+    <div class="span12">
+      <tr>
+      <td>
+      <p style="color:#000000;margin-top:15px;">Popravi naglašene oblike leme <span id="unaccented_lemma"></span>.</p>
+
+      <!-- RESPONSE BUTTONS -->
+      <ul style="float: left; width: 150px;margin-top:0px;margin-bottom:0px;" id="is_accent_adequate_1" class="list-unstyled"></ul>
+      <ul style="float: left; width: 150px;margin-top:0px;margin-bottom:0px;" id="is_accent_adequate_2" class="list-unstyled"></ul>
+      <ul style="float: left; width: 150px;margin-top:0px;margin-bottom:0px;margin-right:10px;" id="is_accent_adequate_3" class="list-unstyled"></ul>
+
+      <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+      </td>
+      <td>
+      <div id="answer" style="float:left;">
+        <!--label style="color:#000000;">Nespremenljivi del</label><br>
+        <tr>
+          <td>
+            <button style="float:right;border:None;background-color:#000000;color:#FFFFFF;height:35px;min-width:50px;font-size:14px;margin-right:15px;margin-top:8px" class="addImmutablePart" value="Izpiši"><b>Izpiši</b></button>
+          </td>
+          <td>
+            <input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="ImmutablePart" id="ImmutablePart" value="">
+          </td>
+        </tr>
+        <br>
+		<hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />        
+        <label style="color:#000000;">Naglaševanje</label><br>
+        <label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="NoProblem"/>  Naglasil_a sem brez problema.</label>
+        <br>
+        <label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="CantDecipherAccent"/>  Naglasa ne razberem.</label>
+        <br>
+        <label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="ProblematicAccent"/>  Naglaševanje je problematično.</label>
+        <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+        <label style="color:#000000;">Komentar</label><br>
+        <input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="myComment" id="myComment" value="">
+        <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+        <label style="color:#000000;">Način izgovorjave</label><br>
+        <label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="SloveneRules"/>  Izgovorjava sledi slovenskim pravilom.</label>
+        <br>
+        <label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="OtherRules"/>  Izgovorjava ne sledi slovenskim pravilom.</label>
+        <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+        <label style="color:#000000;">Vrsta imenske entitete</label><br>
+        <label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="PER">  Oseba</label><br>
+        <label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="LOC">  Kraj</label><br>
+        <label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="ORG">  Organizacija</label><br>
+        <label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="MISC">  Drugo</label>
+        <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+        <!--input type="range" min="1" max="100" value="50" style="width: 20%;height: 50px;background: #d3d3d3;" id="myRange" list="tickmarks">
+        <datalist id="tickmarks">
+  <option value="0" label="0%"></option>
+  <option value="10"></option>
+  <option value="20"></option>
+  <option value="30"></option>
+  <option value="40"></option>
+  <option value="50" label="50%"></option>
+  <option value="60"></option>
+  <option value="70"></option>
+  <option value="80"></option>
+  <option value="90"></option>
+  <option value="100" label="100%"></option>
+</datalist-->
+        <!-- value="Shrani"-->
+        <!--button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani"><b>Shrani</b></button>
+        <!-- value="Shrani z varianto"-->
+        <!--button style="border:None;background-color:#6A0823;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani_z_varianto"><b>Shrani z varianto</b></button-->
+      </div>
+      
+      
+
+      <!--hr style="float:left;border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /-->
+	  <!-- INFORMATION BELOW THE TASK -->
+      <!--div>
+      <span style="font-size:90%;">Trenutno rešujete nalogo <span style="background-color:#DADADA;color:#000000" id="task-id" class="label label-warning">#</span>.</span>
+      <span style="font-size:90%;">
+        Rešili ste <span style="background-color:#DADADA;color:#000000" id="done" class="label label-info"></span> od skupno
+            <!-- Progress bar for the user -->
+        <!--span style="background-color:#DADADA;color:#000000" id="total" class="label label-info"></span> nalog.
+        </span>
+        </div-->
+        </td>
+        </tr>
+    </div>
+</div>
+
+<!-- JAVASCRIPT CODE -->
+<script type="text/javascript">
+
+    // Your JavaScript code
+    pybossa.taskLoaded(function(task, deferred){
+
+      deferred.resolve(task);
+        // When the task is loaded, do....
+    });
+
+  pybossa.presentTask(function(task, deferred){
+        // Present the current task to the user
+        // Load the task data into the HTML DOM
+      if ( !$.isEmptyObject(task) ) {
+        loadUserProgress();
+
+        
+
+        // GET UNACCENTED LEMMA
+        var id_and_lemma = task.info.id_and_lemma;
+        var unaccented_lemma = id_and_lemma.toString().split("~")[1];
+        var immutable_part = task.info.immutable_part;
+        $('#unaccented_lemma').html('<span class="label label-info" style="background-color:#DADADA;color:#000000;font-size:110%;">' + unaccented_lemma + "</span>");
+        
+        // APPEND RESPONSE BUTTONS AND INPUTS TO "ANSWER" DIV
+        
+        //$('#answer').html('<label style="color:#000000;">Nespremenljivi del</label><br><tr><td><button style="border:None;background-color:#000000;color:#FFFFFF;height:35px;min-width:50px;font-size:14px;margin-right:15px;margin-top:8px" class="addImmutablePart" value="' + immutable_part + '"><b>Izpiši</b></button></td><td><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:250px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="ImmutablePart" id="ImmutablePart" value=""></td></tr><br><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Naglaševanje</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="NonProblematicAccentuation"/>  Naglasil_a sem brez problema.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="CannotDecipherAccent"/>  Naglasa ne razberem.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="ProblematicAccentuation"/>  Naglaševanje je problematično.</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Komentar</label><br><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:300px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="myComment" id="myComment" value=""><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Način izgovorjave</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="SloveneG2PRules"/>  Izgovorjava sledi slovenskim pravilom.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="OtherG2PRules"/>  Izgovorjava ne sledi slovenskim pravilom.</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Vrsta imenske entitete</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="PER">  Oseba</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="LOC">  Kraj</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="ORG">  Organizacija</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="MISC">  Drugo</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><!-- value="Shrani"--><button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani"><b>Shrani</b></button>')
+        //$('#answer').append('<label style="color:#000000;">Nespremenljivi del</label><br><tr><td><button style="border:None;background-color:#000000;color:#FFFFFF;height:35px;min-width:50px;font-size:14px;margin-right:15px;margin-top:8px" class="addImmutablePart" value="' + immutable_part + '"><b>Izpiši</b></button></td><td><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:250px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="ImmutablePart" id="ImmutablePart" value=""></td></tr><br><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Naglaševanje</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="NonProblematicAccentuation"/>  Naglasil_a sem brez problema.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="CannotDecipherAccent"/>  Naglasa ne razberem.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="ProblematicAccentuation"/>  Naglaševanje je problematično.</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Komentar</label><br><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:300px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="myComment" id="myComment" value=""><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Način izgovorjave</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="SloveneG2PRules"/>  Izgovorjava sledi slovenskim pravilom.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="OtherG2PRules"/>  Izgovorjava ne sledi slovenskim pravilom.</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Vrsta imenske entitete</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="PER">  Oseba</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="LOC">  Kraj</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="ORG">  Organizacija</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="MISC">  Drugo</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><!-- value="Shrani"--><button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani"><b>Shrani</b></button>')
+        $('#answer').append('<label style="color:#000000;">Nespremenljivi del</label><br><tr><td><button style="border:None;background-color:#000000;color:#FFFFFF;height:35px;min-width:50px;font-size:14px;margin-right:15px;margin-top:8px" class="addImmutablePart" value="' + immutable_part + '"><b>Izpiši</b></button></td><td><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:250px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="ImmutablePart" id="ImmutablePart" value=""></td></tr><br><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Naglaševanje</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="NonProblematicAccentuation"/>  Naglasil_a sem brez problema.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="CannotDecipherAccent"/>  Naglasa ne razberem.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="accentproblems" value="ProblematicAccentuation"/>  Naglaševanje je problematično.</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Komentar</label><br><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:300px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="myComment" id="myComment" value=""><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Način izgovorjave</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="SloveneG2PRules"/>  Izgovorjava sledi slovenskim pravilom.</label><br><label style="font-weight:normal;color:#000000;"><input type="radio" name="g2prules" value="OtherG2PRules"/>  Izgovorjava ne sledi slovenskim pravilom.</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><label style="color:#000000;">Vrsta imenske entitete</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="PER">  Oseba</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="LOC">  Kraj</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="ORG">  Organizacija</label><br><label style="font-weight:normal;color:#000000;"><input type="checkbox" id="namedEntity" value="MISC">  Drugo</label><hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" /><!-- value="Shrani"--><button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani"><b>Shrani</b></button><!-- INFORMATION BELOW THE TASK --><div><span style="font-size:90%;">Trenutno rešujete nalogo <span style="background-color:#DADADA;color:#000000" id="task-id" class="label label-warning">#</span>.</span><br><span style="font-size:90%;">Rešili ste <span style="background-color:#DADADA;color:#000000" id="done" class="label label-info"></span> od skupno <!-- Progress bar for the user --><span style="background-color:#DADADA;color:#000000" id="total" class="label label-info"></span> nalog.</span></div>')
+        
+        // LOAD TASK ID (DISPLAYED BELOW THE TASK)
+        $('#task-id').html(task.info.task_counter);
+        
+        // CLEAR THE FIRST LIST OF INPUT BOXES (TO PREVENT THEM FROM PILING UP)
+        $('#is_accent_adequate_1').html('');
+        $('#is_accent_adequate_2').html('');
+        $('#is_accent_adequate_3').html('');
+
+        // ADD HEADER INFO
+        //$('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#ZZZZZZ;min-width:120px;max-width:600px;text-align:center;"><b>MSD in oblika</b></span>').appendTo('#is_accent_adequate');
+        //$('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#E9F8FF;min-width:120px;max-width:600px;text-align:center;margin-left:10px;"><b>Popravljena oblika</b></span>').appendTo('#is_accent_adequate');
+        //$('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#FFFAE9;min-width:120px;max-width:600px;text-align:center;margin-left:20px;"><b>Različica</b></span>').appendTo('#is_accent_adequate');
+        //$('<br>').appendTo('#is_accent_adequate');
+
+        // GET ALL LISTS WITH INFO ON INDIVIDUAL FORMS
+        for (index in task.info.info_for_all_forms) {
+          var form_list = task.info.info_for_all_forms[index];
+          var lemma_id = form_list[0];
+          var accented_word_form = form_list[8];
+          var msd = form_list[3];
+          var msd_as_array = Array.from(msd);
+          var standardness = form_list[29];
+
+          // GET STANDARDNESS MARKER
+          if (standardness == "non-standard form"){var standardness_marker = "***"}
+          else if (standardness == "_"){var standardness_marker = ""};
+
+          // GET GRAMMATICAL CASE
+          if (msd_as_array[4] == "i"){var grammatical_case = "im."}
+          else if (msd_as_array[4] == "r"){var grammatical_case = "rod."}
+          else if (msd_as_array[4] == "d"){var grammatical_case = "daj."}
+          else if (msd_as_array[4] == "t"){var grammatical_case = "tož."}
+          else if (msd_as_array[4] == "m"){var grammatical_case = "mest."}
+          else if (msd_as_array[4] == "o"){var grammatical_case = "or."};
+
+          // GET GRAMMATICAL NUMBER
+          if (msd_as_array[3] == "e"){var grammatical_number = "ed."}
+          else if (msd_as_array[3] == "d"){var grammatical_number = "dv."}
+          else if (msd_as_array[3] == "m"){var grammatical_number = "mn."};
+
+         //$('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#ZZZZZZ;min-width:120px;max-width:600px;text-align:center;"><b>' + msd + '  ||  ' +  accented_word_form + '</b></span>').appendTo('#is_accent_adequate');
+          // ADD TEXT INPUTS AND LABELS
+          if (msd_as_array[3] == "e"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + grammatical_case + ' ' + grammatical_number + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:140px;background-color:#E9F8FF;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_1');}
+          else if (msd_as_array[3] == "d"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + grammatical_case + ' ' + grammatical_number + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:140px;background-color:#F8EBC8;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_2');}
+          else if (msd_as_array[3] == "m"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + grammatical_case + ' ' + grammatical_number + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:140px;background-color:#CAF8E2;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_3');};
+
+          // ADD THE ACCENT BUTTONS FOR EACH FORM
+          //var list_of_accented_characters = ['á', 'à', 'é', 'è', 'ê', 'í', 'ì', 'ó', 'ò', 'ô', 'ú', 'ù', 'ŕ'];
+          //for (accented_character_index in list_of_accented_characters) {
+          //  var accented_character = list_of_accented_characters[accented_character_index];
+            //$('<button style="margin-right:8px;width:20px;height:25px;color:#000000;" class="accentbuttons' + form_number + '" value="' + accented_character + '">' + accented_character + '</button>').appendTo('#is_accent_adequate');
+          //  $('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#ZZZZZZ;min-width:20px;max-width:30px;min-height:25px;text-align:center;margin-left:10px;"><b>' + accented_character + '</b></span>').appendTo('#is_accent_adequate');
+            //$('<button style="margin-right:8px;width:20px;height:25px;color:#000000;" class="accentbuttons" value="' + accented_character + '">' + accented_character + '</button>').appendTo('#is_accent_adequate');
+          //};
+
+          //$('<br>').appendTo('#is_accent_adequate');
+
+        };
+
+        // FUNCTION TO ALLOW BUTTONS TO INSERT CHARACTERS INTO TEXT INPUT FIELD
+        // ALSO CHECKS RADIO BUTTON WHEN CLICKING ON THE ACCENT BUTTONS!
+        $(function () {
+    	$('.addImmutablePart').on('click', function () {
+        	
+          //unaccented_lemma = task.info.id_and_lemma.toString();
+          var text = $('#ImmutablePart');
+          //$('.addImmutablePart').val(unaccented_lemma.toString());
+          //$('.addImmutablePart').val(unaccented_lemma);
+          //$('.addImmutablePart').val("TESTING!!!");
+          var char = $(this).val();
+          //var char = unaccented_lemma.toString();
+          text.focus();
+          //$(".radio_with_input_text").prop("checked", true);  	
+            //insertAtCursor(text, char);
+          	//text.val(text.val() + char);    
+    		
+          var cursorPos = $('#ImmutablePart').prop('selectionStart');
+    	  var v = $('#ImmutablePart').val();
+    	  var textBefore = v.substring(0,  cursorPos);
+    	  var textAfter  = v.substring(cursorPos, v.length);
+
+    	  $('#ImmutablePart').val(textBefore + char + textAfter);
+          
+        	});
+        	});
+        
+        // FUNCTION TO SAVE RESPONSE USING THE "SHRANI" BUTTON
+        $('.btn-answer').off('click').on('click', function(evt) {
+          // Warning: At least 1 radio button must be ticked for NAGLAŠEVANJE
+          if ($("input:radio[name='accentproblems']:checked").length < 1) {
+            alert("Označite gumb v razdelku Naglaševanje.");}  
+          
+          else if ($("input:radio[name='g2prules']:checked").length < 1) {
+            alert("Označite gumb v razdelku Način izgovorjave.");}
+         
+          else if ($("input:checkbox[id='namedEntity']:checked").length < 1) {
+            alert("Označite vsaj en okvirček v razdelku Vrsta imenske entitete.");}
+          
+          else {
+          var all_input_texts = $.map($("input:text[id='myText']"), function(elem, idx) {
+              var original_string = $(elem).val();
+              var trimmed_string = original_string.trim();
+              var trimmed_string = trimmed_string.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+              var trimmed_string = trimmed_string.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+              var trimmed_string = trimmed_string.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+              var trimmed_string = trimmed_string.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+              var trimmed_string = trimmed_string.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+              var trimmed_string = trimmed_string.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+              return trimmed_string;});
+
+          // ACCENTUATE COMMENT
+          var comment = $('#myComment').val();
+          var comment = comment.trim();
+          var comment = comment.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+          var comment = comment.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+          var comment = comment.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+          var comment = comment.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+          var comment = comment.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+          var comment = comment.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+            
+          // ACCENTUATE IMMUTABLE PART
+          var immutable_part = $('#ImmutablePart').val();
+          var immutable_part = immutable_part.trim();
+          var immutable_part = immutable_part.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+          var immutable_part = immutable_part.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+          var immutable_part = immutable_part.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+          var immutable_part = immutable_part.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+          var immutable_part = immutable_part.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+          var immutable_part = immutable_part.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+
+          // GET VALUE FROM NAGLAŠEVANJE
+         var naglasevanje = $.map($("input:radio[name='accentproblems']:checked"), function(elem, idx) {
+          	return $(elem).val();});
+          
+          // GET VALUE FROM NAČIN IZGOVORJAVE
+         var nacin_izgovorjave = $.map($("input:radio[name='g2prules']:checked"), function(elem, idx) {
+          	return $(elem).val();});
+         
+         // GET VALUES FROM VRSTA IMENSKE ENTITETE
+         var vrsta_imenske_entitete = $.map($("input:checkbox[id='namedEntity']:checked"), function(elem, idx) {
+          	return $(elem).val();});   
+            
+          // SAVE RESPONSE
+          var answer = all_input_texts.join("|") + "~DEPRECATED_VARIANT_PARAMETER~" + comment + "~" + immutable_part + "~" + naglasevanje + "~" + nacin_izgovorjave + "~" + vrsta_imenske_entitete;
+
+          $('#myComment').val('');
+          $('#answer').html('');
+
+
+          if (typeof answer != 'undefined') {
+                console.log(answer);
+                pybossa.saveTask(task.id, answer).done(function() {
+                    deferred.resolve();
+                });
+                $("#loading").fadeIn(500);
+            }
+            else {$("#error").show();}
+          }});
+        $("#loading").hide();
+
+      } else {
+        $(".skeleton").hide();
+        $("#loading").hide();
+        $("#finish").fadeIn(500);
+      }
+    });
+
+  function loadUserProgress() {
+      pybossa.userProgress('sloleks3_rsdo26_rest_of_proper_nouns_accents').done(function(data){
+       var pct = Math.round((data.done*100)/data.total);
+          $("#progress").css("width", pct.toString() +"%");
+          $("#progress").attr("title", pct.toString() + "% completed!");
+          $("#progress").tooltip({'placement': 'left'});
+          $("#total").text(data.total);
+          $("#done").text(data.done);
+      });
+  }
+
+    pybossa.run('sloleks3_rsdo26_rest_of_proper_nouns_accents');
+
+</script>

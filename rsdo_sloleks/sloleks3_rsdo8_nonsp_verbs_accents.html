@@ -1,0 +1,320 @@
+<!-- NOTIFICATIONS -->
+
+<div class="row">
+  <div class="col" style="background-color:#DADADA">
+    </div>
+</div>
+<div class="row">
+    <div class="span12">
+        <div id="success" class="alert alert-success" style="display:none;">
+            <a class="close">×</a>
+            <strong>Odlično!</strong> Odgovor je bil shranjen.
+        </div>
+        <div id="loading" class="alert alert-info" style="display:none;">
+            <a class="close">×</a>
+            Nalagam naslednjo nalogo ...
+        </div>
+        <div id="taskcompleted" class="alert alert-info" style="display:none;">
+            <strong>Naloga je končana!</strong> Najlepša hvala!
+        </div>
+        <div id="finish" class="alert alert-success" style="display:none;">
+            <strong>Čestitke!</strong> Sodelovali ste pri vseh razpoložljivih nalogah!
+            <br />
+            <div class="alert-actions">
+                <a class="btn small" href="/">Nazaj</a>
+                <a class="btn small" href="/app">ali preveri druge projekte</a>
+            </div>
+        </div>
+        <div id="error" class="alert alert-error" style="display:none;">
+            <a class="close">×</a>
+            <strong>Napaka!</strong> Nekaj se je izjalovilo. Prosimo, da o tem obvestite administratorje.
+        </div>
+    </div>
+</div>
+
+<!-- HTML SKELETON FOR TASKS -->
+<div class="row skeleton">
+    
+    <!-- TASK HTML SKELETON -->
+    <div class="span12">
+      <p style="color:#000000;margin-top:15px;">Popravi naglašene oblike leme <span id="unaccented_lemma"></span>.</p>
+         
+      <!-- RESPONSE BUTTONS -->
+      <ul style="float: left; width: 180px;margin-top:0px;margin-bottom:0px;" id="is_accent_adequate_1" class="list-unstyled"></ul>
+      <ul style="float: left; width: 180px;margin-top:0px;margin-bottom:0px;" id="is_accent_adequate_2" class="list-unstyled"></ul>
+      <ul style="float: left; width: 180px;margin-top:0px;margin-bottom:0px;margin-right:10px;" id="is_accent_adequate_3" class="list-unstyled"></ul>
+
+
+      <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+
+
+      <div id="answer">
+        Zamenjaj: <input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:100px;height:30px;background-color:#F2F2F2;" type="text" class="ToBeReplaced" id="ToBeReplaced" value="">
+        -->
+        <input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:100px;height:30px;background-color:#F2F2F2;" type="text" class="ReplaceWith" id="ReplaceWith" value="">
+        <br>
+        <br>
+        
+        Komentar: <input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="myComment" id="myComment" value="">
+        <br>
+        <!-- value="Shrani"-->
+        <button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani"><b>Po občutku</b></button><!--br--> 
+        <!-- value="Iz prirocnika"-->
+        <button style="border:None;background-color:#6A0823;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Iz_prirocnika"><b>Iz priročnika</b></button><!--br--> 
+
+      </div>
+      
+      <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+      
+	  <!-- INFORMATION BELOW THE TASK -->
+      <span style=font-size:90%>Trenutno rešujete nalogo <span style="background-color:#DADADA;color:#000000" id="task-id" class="label label-warning">#</span>.</span>
+      <span style=font-size:90%>
+        Rešili ste <span style="background-color:#DADADA;color:#000000" id="done" class="label label-info"></span> od skupno
+            <!-- Progress bar for the user -->
+        <span style="background-color:#DADADA;color:#000000" id="total" class="label label-info"></span> nalog.
+        </span>
+        <!--div class="progress progress-striped">
+            <div id="progress" rel="tooltip" title="#" class="bar" style="width: 0%;"></div>
+        </div-->
+    </div>
+</div>
+
+<!-- JAVASCRIPT CODE -->
+<script type="text/javascript">
+
+    // Your JavaScript code
+    pybossa.taskLoaded(function(task, deferred){
+      
+      deferred.resolve(task);
+        // When the task is loaded, do....
+    });
+  
+  pybossa.presentTask(function(task, deferred){
+        // Present the current task to the user
+        // Load the task data into the HTML DOM
+      if ( !$.isEmptyObject(task) ) {
+        loadUserProgress();
+        
+        // LOAD TASK ID (DISPLAYED BELOW THE TASK)
+        $('#task-id').html(task.info.task_counter);
+        
+        // GET UNACCENTED LEMMA
+        var id_and_lemma = task.info.id_and_lemma;
+        var unaccented_lemma = id_and_lemma.toString().split("~")[1];
+        $('#unaccented_lemma').html('<span class="label label-info" style="background-color:#DADADA;color:#000000;font-size:110%;">' + unaccented_lemma + "</span>");
+        
+        // CLEAR THE FIRST LIST OF INPUT BOXES (TO PREVENT THEM FROM PILING UP)
+        $('#is_accent_adequate_1').html('');
+        $('#is_accent_adequate_2').html('');
+        $('#is_accent_adequate_3').html('');
+        
+        
+        // GET ALL LISTS WITH INFO ON INDIVIDUAL FORMS
+        for (index in task.info.info_for_all_forms) {
+          var form_list = task.info.info_for_all_forms[index];
+          var lemma_id = form_list[0];
+          var accented_word_form = form_list[8];
+          var msd = form_list[3];
+          var msd_as_array = Array.from(msd);
+          var standardness = form_list[29];
+          
+          if (standardness == "non-standard form"){var standardness_marker = "***"}
+          else if (standardness == "_"){var standardness_marker = ""};
+          
+          // GET GRAMMATICAL CATEGORY (PRESENT, PARTICIPLE, IMPERATIVE + INFINITIVE/SUPINE)
+          if (msd_as_array[3] == "n"){var grammatical_category = "nedoločnik"}
+          else if (msd_as_array[3] == "m"){var grammatical_category = "namenilnik"}
+          else if (msd_as_array[3] == "d"){var grammatical_category = "deležnik"}
+          else if (msd_as_array[3] == "s"){var grammatical_category = "sedanjik"}
+          else if (msd_as_array[3] == "v"){var grammatical_category = "velelnik"};
+          
+
+          // GET GRAMMATICAL PERSON
+          //if (msd_as_array[3] == "n" || msd_as_array[3] == "m" || msd_as_array[3] == "d"){var grammatical_person = ""}
+          //else if (msd_as_array[3] == "s"){
+          //  if (msd_as_array[4] == "p"){var grammatical_person = "1. os"}
+          //  else if (msd_as_array[4] == "d"){var grammatical_person = "2. os"}
+          //  else if (msd_as_array[4] == "t"){var grammatical_person = "3. os"};
+          //};
+
+          // GET GRAMMATICAL NUMBER
+          //if (msd_as_array[3] == "n" || msd_as_array[3] == "m"){var grammatical_number = ""}
+          //else if (msd_as_array[3] == "d" || msd_as_array[3] == "s" || msd_as_array[3] == "v"){
+          //  if (msd_as_array[5] == "e"){var grammatical_number = "ed."}
+          //  else if (msd_as_array[5] == "d"){var grammatical_number = "dv."}
+          //  else if (msd_as_array[5] == "m"){var grammatical_number = "mn."};
+          //};
+          
+          // GET HELP TEXT BASED ON MSD
+          if (msd == "Ggdn" || msd == "Ggnn" || msd == "Ggvn" || msd == "Gp-n"){var help_text = "nedoločnik"}
+          else if (msd == "Ggdm" || msd == "Ggnm" || msd == "Ggvm" || msd == "Gp-m"){var help_text = "namenilnik"}
+          else if (msd == "Ggdd-em" || msd == "Ggnd-em" || msd == "Ggvd-em" || msd == "Gp-d-em"){var help_text = "on je"}
+          else if (msd == "Ggdd-ez" || msd == "Ggnd-ez" ||	msd == "Ggvd-ez" || msd == "Gp-d-ez"){var help_text = "ona je"}
+          else if (msd == "Ggdd-es" || msd == "Ggnd-es" || msd == "Ggvd-es" || msd == "Gp-d-es"){var help_text = "mesto je"}
+          else if (msd == "Ggdd-mm" || msd == "Ggnd-mm" || msd == "Ggvd-mm" || msd == "Gp-d-mm"){var help_text = "oni so"}
+          else if (msd == "Ggdd-mz" || msd == "Ggnd-mz" || msd == "Ggvd-mz" || msd == "Gp-d-mz"){var help_text = "one so"}
+          else if (msd == "Ggdd-ms" || msd == "Ggnd-ms" || msd == "Ggvd-ms" || msd == "Gp-d-ms"){var help_text = "mesta so"}
+          else if (msd == "Ggdd-dm" || msd == "Ggnd-dm" || msd == "Ggvd-dm" || msd == "Gp-d-dm"){var help_text = "midva sva"}
+          else if (msd == "Ggdd-dz" || msd == "Ggnd-dz" || msd == "Ggvd-dz" || msd == "Gp-d-dz"){var help_text = "onidve sta"}
+          else if (msd == "Ggdd-ds" || msd == "Ggnd-ds" || msd == "Ggvd-ds" || msd == "Gp-d-ds"){var help_text = "mesti sta"}
+          else if (msd == "Ggdspe" || msd == "Ggnspe" || msd == "Ggvspe" || msd == "Ggnspe-n" || msd == "Ggnspe-d" || msd == "Gp-spe-n" || msd == "Gp-spe-d"){var help_text = "jaz"}
+          else if (msd == "Ggdspm" || msd == "Ggvspm" || msd == "Ggnspm" || msd == "Ggnspm-n" || msd == "Ggnspm-d" || msd == "Gp-spm-n" || msd == "Gp-spm-d"){var help_text = "mi"}
+          else if (msd == "Ggdspd" || msd == "Ggnspd" || msd == "Ggvspd" || msd == "Ggnspd-n" || msd == "Ggnspd-d" || msd == "Gp-spd-n" || msd == "Gp-spd-d"){var help_text = "midva"}
+          else if (msd == "Ggdsde" || msd == "Ggnsde" || msd == "Ggvsde" || msd == "Ggnsde-n" || msd == "Ggnsde-d" || msd == "Gp-sde-n" || msd == "Gp-sde-d"){var help_text = "ti"}
+          else if (msd == "Gp-spdzn"){var help_text = "midve"}
+          else if (msd == "Ggdsdm" || msd == "Ggnsdm" || msd == "Ggvsdm" || msd == "Ggnsdm-n" || msd == "Ggnsdm-d" || msd == "Gp-sdm-n" || msd == "Gp-sdm-d"){var help_text = "vi"}
+          else if (msd == "Ggdsdd" || msd == "Ggnsdd" || msd == "Ggvsdd" || msd == "Ggnsdd-n" || msd == "Ggnsdd-d" || msd == "Gp-sdd-n" || msd == "Gp-sdd-d"){var help_text = "vidva"}
+          else if (msd == "Ggdste" || msd == "Ggnste" || msd == "Ggvste" || msd == "Ggnste-n" || msd == "Ggnste-d" || msd == "Gp-ste-n" || msd == "Gp-ste-d"){var help_text = "on"}
+          else if (msd == "Ggdstm" || msd == "Ggnstm" || msd == "Ggvstm" || msd == "Ggnstm-n" || msd == "Ggnstm-d" || msd == "Gp-stm-n" || msd == "Gp-stm-d"){var help_text = "oni"}
+          else if (msd == "Ggdstd" || msd == "Ggnstd" || msd == "Ggvstd" || msd == "Ggnstd-n" || msd == "Ggnstd-d" || msd == "Gp-std-n" || msd == "Gp-std-d"){var help_text = "onadva"}
+          else if (msd == "Ggdvpm" || msd == "Ggnvpm" || msd == "Ggvvpm"){var help_text = "mi"}
+          else if (msd == "Ggdvpd" || msd == "Ggnvpd" || msd == "Ggvvpd" || msd == "Ggvppd"){var help_text = "midva"}
+          else if (msd == "Ggdvde" || msd == "Ggnvde" || msd == "Ggvvde"){var help_text = "ti"}
+          else if (msd == "Ggdvdm" || msd == "Ggnvdm" || msd == "Ggvvdm"){var help_text = "vi"}
+          else if (msd == "Ggdvdd" || msd == "Ggnvdd" || msd == "Ggvvdd"){var help_text = "vidva"}
+          else if (msd == "Ggvppe"){var help_text = "jaz"}
+          else if (msd == "Ggvppm"){var help_text = "mi"}
+          else if (msd == "Ggvpde"){var help_text = "ti"}
+          else if (msd == "Ggvpdm"){var help_text = "vi"}
+          else if (msd == "Ggvpdd"){var help_text = "vidva"}
+          else if (msd == "Ggvpte"){var help_text = "on"}
+          else if (msd == "Ggvptm"){var help_text = "oni"}
+          else if (msd == "Ggvptd"){var help_text = "onadva"}
+          else if (msd == "Ggvspdz"){var help_text = "midve"}
+          else if (msd == "Gp-ppe-n" || msd == "Gp-ppe-d"){var help_text = "jaz"}
+          else if (msd == "Gp-ppm-n" || msd == "Gp-ppm-d"){var help_text = "mi"}
+          else if (msd == "Gp-ppd" || msd == "Gp-ppd-n" || msd == "Gp-ppd-d"){var help_text = "midva"}
+          else if (msd == "Gp-pde-n" || msd == "Gp-pde-d"){var help_text = "ti"}
+          else if (msd == "Gp-pdm-n"){var help_text = "vi"}
+          else if (msd == "Gp-pdd-n"){var help_text = "vidva"}
+          else if (msd == "Gp-pte-n" || msd == "Gp-pte-d"){var help_text = "on"}
+          else if (msd == "Gp-ptm-n" || msd == "Gp-ptm-d"){var help_text = "oni"}
+          else if (msd == "Gp-ptd-n"){var help_text = "onadva"}
+          else if (msd == "Gp-g" || msd == "Gp-g---d"){var help_text = "on"}
+          else if (msd == "Gp-vpm"){var help_text = "mi"}
+          else if (msd == "Gp-vpd"){var help_text = "midva"}
+          else if (msd == "Gp-vde"){var help_text = "ti"}
+          else if (msd == "Gp-vdm"){var help_text = "vi"}
+          else if (msd == "Gp-vdd"){var help_text = "vidva"};
+          
+         //$('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#ZZZZZZ;min-width:120px;max-width:600px;text-align:center;"><b>' + msd + '  ||  ' +  accented_word_form + '</b></span>').appendTo('#is_accent_adequate');
+          if (msd_as_array[3] == "n" || msd_as_array[3] == "m"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + help_text + ' ' + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:180px;background-color:#F5D0A9;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_1');}
+          else if (msd_as_array[3] == "d"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + help_text + ' ' + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:180px;background-color:#E9F8FF;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_1');}
+          else if (msd_as_array[3] == "s"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + help_text + ' ' + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:180px;background-color:#F8EBC8;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_2');}
+          else if (msd_as_array[3] == "v"){
+            $('<label style="text-align:right;display:inline-block;width:6em;margin-right:1.0em;padding-top:0.0em;padding-bottom:0.0em;">' + help_text + ' ' + standardness_marker + '<input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;max-width:180px;background-color:#CAF8E2;" type="text" class="myText" id="myText" value="' + accented_word_form + '"></label>').appendTo('#is_accent_adequate_3');};
+          
+          
+          //$('<input style="font-size:150%;color:#000000;margin-bottom:10px;margin-left:10px;margin-right:10px;max-width:140px;background-color:#FFFAE9;" type="text" class="myText" id="myText' + index + '.2' + '" value="">').appendTo('#is_accent_adequate');
+
+          // ADD THE ACCENT BUTTONS FOR EACH FORM
+          var list_of_accented_characters = ['á', 'à', 'é', 'è', 'ê', 'í', 'ì', 'ó', 'ò', 'ô', 'ú', 'ù', 'ŕ'];
+          //for (accented_character_index in list_of_accented_characters) {
+          //  var accented_character = list_of_accented_characters[accented_character_index];
+            //$('<button style="margin-right:8px;width:20px;height:25px;color:#000000;" class="accentbuttons' + form_number + '" value="' + accented_character + '">' + accented_character + '</button>').appendTo('#is_accent_adequate');
+          //  $('<span style="margin-bottom:2px;margin-top:2px;padding:4px;border-width:0.5px;border-radius:5px;border-style:solid;display:inline-block;font-size:100%;color:#000000;background-color:#ZZZZZZ;min-width:20px;max-width:30px;min-height:25px;text-align:center;margin-left:10px;"><b>' + accented_character + '</b></span>').appendTo('#is_accent_adequate');
+            //$('<button style="margin-right:8px;width:20px;height:25px;color:#000000;" class="accentbuttons" value="' + accented_character + '">' + accented_character + '</button>').appendTo('#is_accent_adequate');
+          //};
+
+          $('<br>').appendTo('#is_accent_adequate');
+
+        };
+
+        // FUNCTION TO SAVE RESPONSE USING THE "SHRANI" BUTTON
+        $('.btn-answer').off('click').on('click', function(evt) {
+          	//var answer = $(this).val();
+            var all_input_texts = $.map($("input:text[id='myText']"), function(elem, idx) {
+              var original_string = $(elem).val();
+              var trimmed_string = original_string.trim();
+              var trimmed_string = trimmed_string.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+              var trimmed_string = trimmed_string.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+              var trimmed_string = trimmed_string.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+              var trimmed_string = trimmed_string.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+              var trimmed_string = trimmed_string.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+              var trimmed_string = trimmed_string.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+              return trimmed_string;});
+          //return $(elem).val().trim();});
+          
+          // IF USER CLICKS "SHRANI Z VARIANTO", ADD "WITH_VARIANT" TO RESPONSE
+          var comment = $('#myComment').val();
+          var comment = comment.trim();
+          var comment = comment.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+          var comment = comment.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+          var comment = comment.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+          var comment = comment.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+          var comment = comment.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+          var comment = comment.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+
+          // GET "TO BE REPLACED" INPUT
+          var tobereplaced = $('#ToBeReplaced').val()
+          var tobereplaced = tobereplaced.trim();
+          var tobereplaced = tobereplaced.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+          var tobereplaced = tobereplaced.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+          var tobereplaced = tobereplaced.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+          var tobereplaced = tobereplaced.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+          var tobereplaced = tobereplaced.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+          var tobereplaced = tobereplaced.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+       
+          // GET "REPLACE WITH" INPUT
+          var replacewith = $('#ReplaceWith').val()
+          var replacewith = replacewith.trim();
+          var replacewith = replacewith.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+          var replacewith = replacewith.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+          var replacewith = replacewith.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+          var replacewith = replacewith.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+          var replacewith = replacewith.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+          var replacewith = replacewith.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+       
+          
+          if ($(this).val() == "Iz_prirocnika") {
+            var answer = all_input_texts.join("|") + "~FROM_MANUAL~" + comment + "~" + tobereplaced + "~" + replacewith;
+          }
+          else {var answer = all_input_texts.join("|") + "~BY_INTUITION~" + comment + "~" + tobereplaced + "~" + replacewith;};
+          
+          $('#myComment').val('');
+          $('#ToBeReplaced').val('');
+          $('#ReplaceWith').val('');
+
+
+          if (typeof answer != 'undefined') {
+                console.log(answer);
+                pybossa.saveTask(task.id, answer).done(function() {
+                    deferred.resolve();
+                });
+                $("#loading").fadeIn(500);
+            }
+            else {
+                $("#error").show();
+            }
+        });
+        $("#loading").hide();
+
+      } else {
+        $(".skeleton").hide();
+        $("#loading").hide();
+        $("#finish").fadeIn(500);
+      }
+    });
+  
+  
+  
+  
+  
+  
+  function loadUserProgress() {
+      pybossa.userProgress('sloleks3_rsdo8_nonsp_verbs_accents').done(function(data){
+       var pct = Math.round((data.done*100)/data.total);
+          $("#progress").css("width", pct.toString() +"%");
+          $("#progress").attr("title", pct.toString() + "% completed!");
+          $("#progress").tooltip({'placement': 'left'});
+          $("#total").text(data.total);
+          $("#done").text(data.done);
+      });
+  }
+
+    pybossa.run('sloleks3_rsdo8_nonsp_verbs_accents');
+
+</script>

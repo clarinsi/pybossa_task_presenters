@@ -1,0 +1,186 @@
+<!-- NOTIFICATIONS -->
+
+<div class="row">
+  <div class="col" style="background-color:#DADADA">
+    </div>
+</div>
+<div class="row">
+    <div class="span12">
+        <div id="success" class="alert alert-success" style="display:none;">
+            <a class="close">×</a>
+            <strong>Odlično!</strong> Odgovor je bil shranjen.
+        </div>
+        <div id="loading" class="alert alert-info" style="display:none;">
+            <a class="close">×</a>
+            Nalagam naslednjo nalogo ...
+        </div>
+        <div id="taskcompleted" class="alert alert-info" style="display:none;">
+            <strong>Naloga je končana!</strong> Najlepša hvala!
+        </div>
+        <div id="finish" class="alert alert-success" style="display:none;">
+            <strong>Čestitke!</strong> Sodelovali ste pri vseh razpoložljivih nalogah!
+            <br />
+            <div class="alert-actions">
+                <a class="btn small" href="/">Nazaj</a>
+                <a class="btn small" href="/app">ali preveri druge projekte</a>
+            </div>
+        </div>
+        <div id="error" class="alert alert-error" style="display:none;">
+            <a class="close">×</a>
+            <strong>Napaka!</strong> Nekaj se je izjalovilo. Prosimo, da o tem obvestite administratorje.
+        </div>
+    </div>
+</div>
+
+<!-- HTML SKELETON FOR TASKS -->
+<div class="row skeleton">
+
+    <!-- TASK HTML SKELETON -->
+    <div class="span12">
+      <p style="color:#000000;margin-top:15px;">Določi izgovor obarvanega L-ja v oblikah leme <span id="unaccented_lemma"></span>.</p>
+
+      <!-- RESPONSE BUTTONS -->
+      <ul style="margin-top:0px;margin-bottom:0px;" id="l_pronunciation" class="list-unstyled"></ul>
+      <hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />
+      <div id="answer">
+      </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT CODE -->
+<script type="text/javascript">
+
+    // Your JavaScript code
+    pybossa.taskLoaded(function(task, deferred){
+
+      deferred.resolve(task);
+        // When the task is loaded, do....
+    });
+
+  pybossa.presentTask(function(task, deferred){
+        // Present the current task to the user
+        // Load the task data into the HTML DOM
+      if ( !$.isEmptyObject(task) ) {
+        loadUserProgress();
+
+        // GET UNACCENTED LEMMA
+        var id_and_lemma = task.info.id_and_lemma;
+        var unaccented_lemma = id_and_lemma.toString().split("~")[1];
+        $('#unaccented_lemma').html('<span class="label label-info" style="background-color:#DADADA;color:#000000;font-size:110%;">' + unaccented_lemma + "</span>");
+
+        // APPEND RESPONSE BUTTONS AND INPUTS TO "ANSWER" DIV
+        $('#answer').append('<label style="color:#000000;">Komentar</label><br><input style="font-size:120%;color:#000000;margin-bottom:1px;margin-left:10px;min-width:300px;max-width:600px;height:50px;background-color:#F2F2F2;" type="text" class="myComment" id="myComment" value=""><br><!-- value="Shrani"--><button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="btn btn-answer" value="Shrani"><b>Shrani</b></button><!-- INFORMATION BELOW THE TASK --><div><span style="font-size:90%;">Trenutno rešujete nalogo <span style="background-color:#DADADA;color:#000000" id="task-id" class="label label-warning">#</span>.</span><br><span style="font-size:90%;">Rešili ste <span style="background-color:#DADADA;color:#000000" id="done" class="label label-info"></span> od skupno <!-- Progress bar for the user --><span style="background-color:#DADADA;color:#000000" id="total" class="label label-info"></span> nalog.</span></div>');
+        // LOAD TASK ID (DISPLAYED BELOW THE TASK)
+        $('#task-id').html(task.info.task_counter);
+
+        // CLEAR THE FIRST LIST OF INPUT BOXES (TO PREVENT THEM FROM PILING UP)
+        $('#l_pronunciation').html('');
+
+        // BUTTONS TO CHECK ALL COLUMNS
+        $('<button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="vse_L" value="vse_L"><b>Vse L</b></button>').appendTo('#l_pronunciation');
+		$('<button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="vse_U" value="vse_U"><b>Vse U</b></button>').appendTo('#l_pronunciation');
+        $('<button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="vse_B" value="vse_B"><b>Vse oboje</b></button>').appendTo('#l_pronunciation');
+		$('<button style="border:None;background-color:#045FB4;color:#FFFFFF;height:35px;min-width:100px;font-size:14px;margin-right:15px;margin-top:8px" class="Pocisti" value="Pocisti"><b>Počisti</b></button>').appendTo('#l_pronunciation');
+		$('<hr style="border:0;height:1px;margin-bottom:10px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />').appendTo('#l_pronunciation');
+        //$('<br><br>').appendTo('#l_pronunciation');
+
+        // GET ALL LISTS WITH INFO ON INDIVIDUAL FORMS
+        for (index in task.info.info_for_all_forms) {
+          var form_list = task.info.info_for_all_forms[index];
+          var lemma_id = form_list[0];
+          var form = form_list[1];
+          var lemma = form_list[2];
+          var msd = form_list[3];
+          var bigram_status = form_list[4];
+          var lc_bigram = form_list[5];
+          var form_with_span = form_list[6];
+          var final_word_part = form_list[7];
+          var index_number = index;
+
+          var input_radio_button_L = '<label style="font-weight:normal;color:#000000;"><input type="radio" style="margin-left:2.0em;" class="L" name="pronounciation_' + msd + '_' + index_number + '" value="L"/>  L</label>'
+          var input_radio_button_U = '<label style="font-weight:normal;color:#000000;"><input type="radio" style="margin-left:2.0em;" class="U" name="pronounciation_' + msd + '_' + index_number + '" value="U"/>  U</label>'
+		  var input_radio_button_B = '<label style="font-weight:normal;color:#000000;"><input type="radio" style="margin-left:2.0em;" class="B" name="pronounciation_' + msd + '_' + index_number + '" value="B"/>  Oboje</label>'
+		  var separator = '<hr style="border:0;height:1px;margin-bottom:5px;margin-top:5px;background:#333;background-image:linear-gradient(toright,#ccc,#333,#ccc);" />'
+
+          $('<tr><td><span style="width:1.0em;margin-right:0.0em;padding-top:0.0em;padding-bottom:0.2em;">' + msd + '</span></td><td><span class="label label-info" style="background-color:#DADADA;margin-left:2.0em;padding-bottom:0.2em;color:#000000;font-size:110%;">' + form_with_span + '</span><br></td><td>' + input_radio_button_L + '</td><td>' + input_radio_button_U + '</td><td>' + input_radio_button_B + '</td></tr>').appendTo('#l_pronunciation');
+		  $('<tr>'+ separator + '</tr>').appendTo('#l_pronunciation');}
+
+
+        // FUNCTION TO CHECK ALL L
+        $(function () {$("button[class='vse_L']").on('click', function () {$("input:radio[class='L']").attr("checked", "checked");} )});
+        
+        // FUNCTION TO CHECK ALL U
+        $(function () {$("button[class='vse_U']").on('click', function () {$("input:radio[class='U']").attr("checked", "checked");} )});
+        
+        // FUNCTION TO CHECK ALL B
+        $(function () {$("button[class='vse_B']").on('click', function () {$("input:radio[class='B']").attr("checked", "checked");} )});
+        
+        // FUNCTION TO UNCHECK ALL
+        $(function () {$("button[class='Pocisti']").on('click', function () {$("input:radio").removeAttr("checked");} )});
+        
+        
+          
+        // FUNCTION TO ALLOW BUTTONS TO INSERT CHARACTERS INTO TEXT INPUT FIELD
+
+        // FUNCTION TO SAVE RESPONSE USING THE "SHRANI" BUTTON
+        $('.btn-answer').off('click').on('click', function(evt) {
+          // Warning: All radio buttons must be ticked
+          if ($("input:radio:checked").length < $("input:radio").length/3) {
+            alert("Hop, cefizelj_ka! Nisi označil_a vseh gumbov.");}
+          else {
+
+          // ACCENTUATE COMMENT
+          var comment = $('#myComment').val();
+          var comment = comment.trim();
+          var comment = comment.replace(/\/a/g, "á").replace(/\\a/g, "à").replace(/\/A/g, "Á").replace(/\\A/g, "À");
+          var comment = comment.replace(/\\e/g, "è").replace(/\/e/g, "é").replace(/\=e/g, "ê").replace(/\/E/g, "É").replace(/\\E/g, "È").replace(/\=E/g, "Ê");
+          var comment = comment.replace(/\/i/g, "í").replace(/\\i/g, "ì").replace(/\\I/g, "Ì").replace(/\/I/g, "Í");
+          var comment = comment.replace(/\/o/g, "ó").replace(/\\o/g, "ò").replace(/\=o/g, "ô").replace(/\/O/g, "Ó").replace(/\\O/g, "Ò").replace(/\=O/g, "Ô");
+          var comment = comment.replace(/\\u/g, "ù").replace(/\/u/g, "ú").replace(/\\U/g, "Ù").replace(/\/U/g, "Ú");
+          var comment = comment.replace(/\/r/g, "ŕ").replace(/\/R/g, "Ŕ");
+            
+          
+          // GET VALUE FROM NAGLAŠEVANJE
+         var pronunciation = $.map($("input:radio:checked"), function(elem, idx) {
+          	return $(elem).val();});
+
+          // SAVE RESPONSE
+          var answer = pronunciation.join("|") + "~" + comment;
+
+          $('#myComment').val('');
+          $('#answer').html('');
+          $('html, body').animate({scrollTop : 0},200);
+
+
+          if (typeof answer != 'undefined') {
+                console.log(answer);
+                pybossa.saveTask(task.id, answer).done(function() {
+                    deferred.resolve();
+                });
+                $("#loading").fadeIn(500);
+            }
+            else {$("#error").show();}
+          }});
+        $("#loading").hide();
+
+      } else {
+        $(".skeleton").hide();
+        $("#loading").hide();
+        $("#finish").fadeIn(500);
+      }
+    });
+
+  function loadUserProgress() {
+      pybossa.userProgress('sloleks3_rsdo30_words_with_single_lc_bigrams').done(function(data){
+       var pct = Math.round((data.done*100)/data.total);
+          $("#progress").css("width", pct.toString() +"%");
+          $("#progress").attr("title", pct.toString() + "% completed!");
+          $("#progress").tooltip({'placement': 'left'});
+          $("#total").text(data.total);
+          $("#done").text(data.done);
+      });
+  }
+
+    pybossa.run('sloleks3_rsdo30_words_with_single_lc_bigrams');
+
+</script>
