@@ -4,7 +4,7 @@ V tem repozitoriju se nahaja rezultat aktivnosti A3.1 - R1.3.2 Orodje za celovit
 
 ---
 
-This repository contains the tasks presenters developed for the annotation of the Sloleks Slovene Morphological Lexicon within the RSDO project.
+This repository contains the task presenters developed for the annotation of the Sloleks Slovene Morphological Lexicon within the RSDO project.
 
  ---
 
